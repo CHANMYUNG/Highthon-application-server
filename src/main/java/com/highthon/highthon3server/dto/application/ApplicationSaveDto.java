@@ -6,10 +6,12 @@ import com.highthon.highthon3server.domain.application.Position;
 import com.highthon.highthon3server.domain.application.Sex;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class ApplicationSaveDto {
     private String name;
     private Sex sex;
