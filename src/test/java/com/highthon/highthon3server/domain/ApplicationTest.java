@@ -1,9 +1,6 @@
 package com.highthon.highthon3server.domain;
 
-import com.highthon.highthon3server.domain.application.Application;
-import com.highthon.highthon3server.domain.application.ApplicationRepository;
-import com.highthon.highthon3server.domain.application.Area;
-import com.highthon.highthon3server.domain.application.Sex;
+import com.highthon.highthon3server.domain.application.*;
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,7 +26,8 @@ public class ApplicationTest {
                 .phone("010-1111-1111")
                 .email("test@test.com")
                 .password("1234")
-                .applyType(Area.DEVELOPMENT)
+                .area(Area.LIFE)
+                .position(Position.DEVELOP)
                 .build()).getApplicationId();
 
         assertTrue(applicationId != null);

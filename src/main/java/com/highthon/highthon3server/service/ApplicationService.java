@@ -6,7 +6,7 @@ import com.highthon.highthon3server.domain.application.Area;
 import com.highthon.highthon3server.domain.application.Position;
 import com.highthon.highthon3server.dto.application.ApplicationSaveDto;
 import com.highthon.highthon3server.dto.application.SaveResponse;
-import com.highthon.highthon3server.exception.DuplicateValueException;
+import com.highthon.highthon3server.exception.DuplicatedValueException;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,11 +28,11 @@ public class ApplicationService {
     @Transactional
     public SaveResponse saveApplication(ApplicationSaveDto dto) {
         SaveResponse response = null;
-
+        Integer waitingNumber = null;
         if (applicationRepository.countByPhone(dto.getPhone()) > 0)
-            throw new DuplicateValueException("phone");
+            throw new DuplicatedValueException("phone");
         if (applicationRepository.countByEmail(dto.getEmail()) > 0)
-            throw new DuplicateValueException("email");
+            throw new DuplicatedValueException("email");
 
         int limit = getLimit(dto.getArea(), dto.getPosition());
         int count = applicationRepository.countByAreaAndPosition(dto.getArea(), dto.getPosition());
@@ -41,14 +41,13 @@ public class ApplicationService {
 
         if (count < limit) {
             application.setIsAccepted(true);
-            applicationRepository.save(application);
-            response = new SaveResponse(true, null);
         } else {
             application.setIsAccepted(false);
-            applicationRepository.save(application);
-            Integer waitingNumber = applicationRepository.getWaitingNumber(application.getCreatedDate());
-            response = new SaveResponse(false, waitingNumber);
+            waitingNumber = applicationRepository.getWaitingNumber(application.getCreatedDate());
         }
+
+        applicationRepository.save(application);
+        response = new SaveResponse(true, waitingNumber);
 
         return response;
     }
