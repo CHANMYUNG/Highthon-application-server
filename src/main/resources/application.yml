@@ -6,3 +6,5 @@ spring:
     driver-class-name: com.mysql.jdbc.Driver
     username: nooheat
     password: xogns1228
+  jpa:
+    show-sql: true

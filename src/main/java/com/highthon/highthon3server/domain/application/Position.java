@@ -1,8 +1,6 @@
 package com.highthon.highthon3server.domain.application;
 
-public enum ApplyType {
-    LIFE,
-    GAME,
-    DEVELOPMENT,
+public enum Position {
+    DEVELOP,
     DESIGN
 }

@@ -1,18 +1,17 @@
 package com.highthon.highthon3server.domain.application;
 
-import com.highthon.highthon3server.domain.BaseTimeEntity;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import org.hibernate.annotations.GenericGenerator;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Application extends BaseTimeEntity {
+public class Application {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,22 +35,34 @@ public class Application extends BaseTimeEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private ApplyType applyType;
+    private Area area;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Position position;
+
+    @Setter
     @Column(columnDefinition = "BOOLEAN NOT NULL DEFAULT 0")
-    private Boolean isAccepted;
+    private Boolean isAccepted = false;
+    
+    @JsonFormat(pattern = "yyyy-MM-dd kk:mm:ss")
+    private LocalDateTime createdDate = LocalDateTime.now();
 
-    @Column
-    private Long waitingNumber;
+    @Column(nullable = false)
+    private String belong;
+
 
     @Builder
-    public Application(String name, Sex sex, String phone, String email, String password, ApplyType applyType) {
+    public Application(String name, Sex sex, String phone, String email, String password, Area area, Position position, Boolean isAccepted, LocalDateTime createdDate, String belong) {
         this.name = name;
         this.sex = sex;
         this.phone = phone;
         this.email = email;
         this.password = password;
-        this.applyType = applyType;
-        this.isAccepted = false;
+        this.area = area;
+        this.position = position;
+        this.isAccepted = isAccepted;
+        this.createdDate = createdDate;
+        this.belong = belong;
     }
 }
