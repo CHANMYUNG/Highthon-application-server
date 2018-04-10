@@ -1,11 +1,10 @@
 package com.highthon.highthon3server.service;
 
-import com.highthon.highthon3server.domain.application.Application;
-import com.highthon.highthon3server.domain.application.ApplicationRepository;
-import com.highthon.highthon3server.domain.application.Area;
-import com.highthon.highthon3server.domain.application.Position;
+import com.highthon.highthon3server.domain.application.*;
 import com.highthon.highthon3server.dto.application.ApplicationSaveDto;
+import com.highthon.highthon3server.dto.application.ApplicationConditionDto;
 import com.highthon.highthon3server.dto.application.SaveResponse;
+import com.highthon.highthon3server.exception.ApplicationNotFoundException;
 import com.highthon.highthon3server.exception.DuplicatedValueException;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,5 +59,12 @@ public class ApplicationService {
             if (position == Position.DESIGN) return LIFE_DESIGN_LIMIT;
             else return LIFE_DEVELOP_LIMIT;
         }
+    }
+
+    @Transactional
+    public ApplicationCondition getApplicationCondition(ApplicationConditionDto dto) {
+        ApplicationCondition condition = applicationRepository.getApplicationCondition(dto.getEmail(), dto.getPassword());
+        if (condition == null) throw new ApplicationNotFoundException();
+        else return condition;
     }
 }

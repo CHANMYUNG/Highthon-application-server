@@ -33,9 +33,20 @@ public class ApplicationTest {
         assertTrue(applicationId != null);
     }
 
+    @Test
+    public void 신청서_상태를_조회한다() {
+        ApplicationCondition status = applicationRepository.getApplicationCondition("test3@test.com", "1234");
+
+        System.out.println(status.getIsAccepted());
+        System.out.println(status.getWaitingNumber());
+        System.out.println(status.getName());
+
+        assertTrue(status.getIsAccepted() == false);
+    }
+
     @After
     public void cleanup() {
-        applicationRepository.deleteAll();
+//        applicationRepository.deleteAll();
     }
 //    @Test
 

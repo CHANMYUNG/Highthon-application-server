@@ -3,6 +3,7 @@ package com.highthon.highthon3server.service;
 
 import com.highthon.highthon3server.domain.application.ApplicationRepository;
 import com.highthon.highthon3server.domain.application.Area;
+import com.highthon.highthon3server.domain.application.Position;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,7 @@ public class ApplicationService {
 
     @Test
     public void countByApplyType() {
-        Integer count = applicationRepository.countByApplyType(Area.DEVELOPMENT);
+        Integer count = applicationRepository.countByAreaAndPosition(Area.LIFE, Position.DEVELOP);
 
         System.out.println(count);
         assertTrue(count != null);

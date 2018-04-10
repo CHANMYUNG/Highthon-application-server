@@ -1,6 +1,7 @@
 package com.highthon.highthon3server.exceptionHandler;
 
 
+import com.highthon.highthon3server.exception.ApplicationNotFoundException;
 import com.highthon.highthon3server.exception.DuplicatedValueException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -17,6 +18,13 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.CONFLICT)
     @ResponseBody
     protected ErrorResponse duplicatedValueException(HttpServletRequest request, Exception exception) {
+        return new ErrorResponse(request.getRequestURL().toString(), exception.getMessage());
+    }
+
+    @ExceptionHandler(value = ApplicationNotFoundException.class)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseBody
+    protected ErrorResponse applicationNotFoundException(HttpServletRequest request, Exception exception) {
         return new ErrorResponse(request.getRequestURL().toString(), exception.getMessage());
     }
 

@@ -29,4 +29,14 @@ public interface ApplicationRepository extends JpaRepository<Application, Long> 
             "FROM Application a " +
             "WHERE a.email = :email")
     Integer countByEmail(@Param("email") String email);
+
+    @Query("SELECT new com.highthon.highthon3server.domain.application.ApplicationCondition(a.name, a.isAccepted, " +
+            "(CASE " +
+            "   WHEN (a.isAccepted = FALSE) " +
+            "       THEN (SELECT count(sub_a) FROM Application sub_a WHERE sub_a.isAccepted=FALSE AND sub_a.area = a.area AND sub_a.position = a.position AND sub_a.createdDate <= a.createdDate) " +
+            "   ELSE NULL " +
+            "END)) " +
+            "FROM Application a " +
+            "WHERE a.email = :email AND a.password = :password")
+    ApplicationCondition getApplicationCondition(@Param("email") String email, @Param("password") String password);
 }

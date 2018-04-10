@@ -22,18 +22,6 @@ public class ApplicationSaveDto {
     private String belong;
     private Position position;
 
-    @Builder
-    public ApplicationSaveDto(String name, Sex sex, String phone, String email, String password, Area area, String belong, Position position) {
-        this.name = name;
-        this.sex = sex;
-        this.phone = phone;
-        this.email = email;
-        this.password = password;
-        this.area = area;
-        this.belong = belong;
-        this.position = position;
-    }
-
     public Application toEntity() {
         return Application.builder()
                 .name(name)
