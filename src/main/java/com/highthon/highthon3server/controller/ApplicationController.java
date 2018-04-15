@@ -4,7 +4,7 @@ import com.highthon.highthon3server.domain.application.ApplicationCondition;
 import com.highthon.highthon3server.dto.application.ApplicationSaveDto;
 import com.highthon.highthon3server.dto.application.ApplicationConditionDto;
 import com.highthon.highthon3server.dto.application.SaveResponse;
-import com.highthon.highthon3server.service.ApplicationService;
+import com.highthon.highthon3server.service.application.ApplicationService;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

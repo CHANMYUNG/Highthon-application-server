@@ -1,4 +1,4 @@
-package com.highthon.highthon3server.service;
+package com.highthon.highthon3server.service.application;
 
 import com.highthon.highthon3server.domain.application.*;
 import com.highthon.highthon3server.dto.application.ApplicationSaveDto;
