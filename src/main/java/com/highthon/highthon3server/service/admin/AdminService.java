@@ -1,17 +1,16 @@
 package com.highthon.highthon3server.service.admin;
 
-import com.highthon.highthon3server.domain.admin.AdminRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import com.highthon.highthon3server.domain.admin.Admin;
+import com.highthon.highthon3server.dto.admin.AdminSignupDto;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
-import javax.transaction.Transactional;
+public interface AdminService extends UserDetailsService {
+    PasswordEncoder passwordEncoder();
 
-@Service
-public class AdminService {
+    void createAdmin(AdminSignupDto dto);
 
-    @Autowired
-    private AdminRepository adminRepository;
+    void deleteAdmin(String adminId);
 
-//    @Transactional
-//    public
+    Admin readAdmin(String adminId);
 }

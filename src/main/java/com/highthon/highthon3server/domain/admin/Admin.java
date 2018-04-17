@@ -13,8 +13,12 @@ import org.springframework.security.core.userdetails.UserDetails;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Entity
 @Getter
@@ -53,12 +57,26 @@ public class Admin implements UserDetails {
     private List<AdminRole> roles;
 
     @Builder
-    public Admin(String name, String email, String belong, String password, String phone) {
+    public Admin(String name, String email, String belong, String password, String phone, List<AdminRole> roles) {
         this.name = name;
         this.email = email;
         this.belong = belong;
         this.password = password;
         this.phone = phone;
+        this.roles = roles;
+    }
+
+    public void setRoles(Role... roles) {
+        this.roles = Arrays.stream(roles).map(role -> new AdminRole(email, role)).collect(Collectors.toList());
+    }
+
+    public void addRoles(Role... roles) {
+        List<AdminRole> paramRoles = Arrays.stream(roles).map(role -> new AdminRole(email, role)).collect(Collectors.toList());
+        if (this.roles == null) {
+            this.roles = paramRoles;
+        } else {
+            this.roles.addAll(paramRoles);
+        }
     }
 
     @Override

@@ -13,7 +13,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 public class AdminRole implements GrantedAuthority {
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long adminRoleId;
 
     @Column(nullable = false)
@@ -24,7 +24,7 @@ public class AdminRole implements GrantedAuthority {
 
     @Override
     public String getAuthority() {
-        return role.getAuthority();
+        return role.name();
     }
 
     public AdminRole(String email, Role role) {
