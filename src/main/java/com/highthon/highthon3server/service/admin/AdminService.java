@@ -5,8 +5,7 @@ import com.highthon.highthon3server.dto.admin.AdminSignupDto;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-public interface AdminService extends UserDetailsService {
-    PasswordEncoder passwordEncoder();
+public interface AdminService {
 
     void createAdmin(AdminSignupDto dto);
 

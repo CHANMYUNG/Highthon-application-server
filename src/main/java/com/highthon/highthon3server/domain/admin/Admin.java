@@ -56,6 +56,9 @@ public class Admin implements UserDetails {
     @JoinColumn(name = "email", referencedColumnName = "email")
     private List<AdminRole> roles;
 
+    @Column
+    private LocalDateTime lastPasswordResetDate;
+
     @Builder
     public Admin(String name, String email, String belong, String password, String phone, List<AdminRole> roles) {
         this.name = name;

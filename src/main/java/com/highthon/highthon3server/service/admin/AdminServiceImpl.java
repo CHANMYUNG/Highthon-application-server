@@ -23,17 +23,6 @@ public class AdminServiceImpl implements AdminService {
     private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        return adminRepository.findByEmail(email);
-    }
-
-
-    @Override
-    public PasswordEncoder passwordEncoder() {
-        return passwordEncoder;
-    }
-
-    @Override
     @Transactional
     public void createAdmin(AdminSignupDto dto) {
         Admin admin = dto.toEntity();

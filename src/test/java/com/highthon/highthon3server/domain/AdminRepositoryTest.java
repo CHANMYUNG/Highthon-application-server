@@ -6,6 +6,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.ArrayList;
@@ -39,7 +40,7 @@ public class AdminRepositoryTest {
                 .belong("테스트학교")
                 .email(TEST_ADMIN_ACCOUNT_EMAIL)
                 .name("testAdmin")
-                .password("1234")
+                .password(new BCryptPasswordEncoder().encode("1234"))
                 .phone("010-0000-0000")
                 .roles(Arrays.asList(new AdminRole(TEST_ADMIN_ACCOUNT_EMAIL, Role.BASIC)))
                 .build();
@@ -51,7 +52,7 @@ public class AdminRepositoryTest {
 
     @Test
     public void 권한_가져오기() {
-        Admin admin = repository.findByEmail(TEST_ADMIN_ACCOUNT_EMAIL);
+        Admin admin = repository.findByEmail(TEST_ADMIN_ACCOUNT_EMAIL).orElse(null);
         Collection<AdminRole> adminRoles = admin.getRoles();
 
         List<Role> roles = adminRoles.stream().map(AdminRole::getRole).collect(Collectors.toCollection(ArrayList::new));
@@ -61,7 +62,7 @@ public class AdminRepositoryTest {
 
     @Test
     public void 권한_추가하기() {
-        Admin admin = repository.findByEmail(TEST_ADMIN_ACCOUNT_EMAIL);
+        Admin admin = repository.findByEmail(TEST_ADMIN_ACCOUNT_EMAIL).orElse(null);
 
         admin.addRoles(Role.SUPER);
 

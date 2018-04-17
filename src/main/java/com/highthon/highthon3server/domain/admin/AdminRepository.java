@@ -5,8 +5,10 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
+import javax.swing.text.html.Option;
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 
 public interface AdminRepository extends CrudRepository<Admin, String> {
 
@@ -18,6 +20,6 @@ public interface AdminRepository extends CrudRepository<Admin, String> {
 
     @Query("SELECT a FROM Admin a " +
             "WHERE a.email = :email")
-    Admin findByEmail(@Param("email") String email);
+    Optional<Admin> findByEmail(@Param("email") String email);
 
 }

@@ -8,3 +8,5 @@ spring:
     password: xogns1228
   jpa:
     show-sql: true
+jwt:
+  secret: asdasdasd
