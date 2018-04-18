@@ -2,12 +2,16 @@ package com.highthon.highthon3server.dto.auth;
 
 
 import com.highthon.highthon3server.domain.admin.Admin;
+import com.highthon.highthon3server.validator.Email;
+import com.highthon.highthon3server.validator.Password;
+import com.highthon.highthon3server.validator.Phone;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.Column;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 @Getter
 @Setter
@@ -20,15 +24,18 @@ public class AdminSignupDto {
     private String name;
 
     @NotNull
+    @Email
     private String email;
 
     @NotNull
     private String belong;
 
     @NotNull
+    @Password
     private String password;
 
     @NotNull
+    @Phone
     private String phone;
 
     public Admin toEntity() {

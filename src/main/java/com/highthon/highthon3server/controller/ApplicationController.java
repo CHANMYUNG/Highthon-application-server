@@ -11,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RestController
 @NoArgsConstructor
 public class ApplicationController {
@@ -18,7 +20,7 @@ public class ApplicationController {
     private ApplicationService applicationService;
 
     @PostMapping("/apply")
-    public ResponseEntity<SaveResponse> apply(@RequestBody ApplicationSaveDto dto) {
+    public ResponseEntity<SaveResponse> apply(@Valid @RequestBody ApplicationSaveDto dto) {
         return new ResponseEntity<SaveResponse>(applicationService.saveApplication(dto), HttpStatus.CREATED);
     }
 

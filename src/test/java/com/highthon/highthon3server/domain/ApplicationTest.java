@@ -17,10 +17,12 @@ public class ApplicationTest {
     @Autowired
     ApplicationRepository applicationRepository;
 
+    Long TEST_APPLICATION_ID;
+
     @Test
     public void 신청서를_작성한다() {
 
-        Long applicationId = applicationRepository.save(Application.builder()
+        TEST_APPLICATION_ID = applicationRepository.save(Application.builder()
                 .name("윤찬명")
                 .sex(Sex.MAN)
                 .phone("010-1111-1111")
@@ -30,12 +32,12 @@ public class ApplicationTest {
                 .position(Position.DEVELOP)
                 .build()).getApplicationId();
 
-        assertTrue(applicationId != null);
+        assertTrue(TEST_APPLICATION_ID != null);
     }
 
     @Test
     public void 신청서_상태를_조회한다() {
-        ApplicationCondition status = applicationRepository.getApplicationCondition("test3@test.com", "1234");
+        ApplicationCondition status = applicationRepository.getApplicationConditionById(TEST_APPLICATION_ID);
 
         System.out.println(status.getIsAccepted());
         System.out.println(status.getWaitingNumber());

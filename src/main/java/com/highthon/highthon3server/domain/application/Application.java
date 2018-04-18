@@ -49,6 +49,7 @@ public class Application {
     @JsonFormat(pattern = "yyyy-MM-dd kk:mm:ss")
     private LocalDateTime createdDate = LocalDateTime.now();
 
+    @Setter
     @Column(nullable = false)
     private String belong;
 

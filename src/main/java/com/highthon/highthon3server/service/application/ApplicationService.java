@@ -7,15 +7,12 @@ import com.highthon.highthon3server.dto.application.SaveResponse;
 import com.highthon.highthon3server.exception.ApplicationNotFoundException;
 import com.highthon.highthon3server.exception.AuthenticationException;
 import com.highthon.highthon3server.exception.DuplicatedValueException;
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.Optional;
 
 @Service
 public class ApplicationService {
@@ -44,7 +41,7 @@ public class ApplicationService {
 
         Application application = dto.toEntity();
         application.setPassword(passwordEncoder.encode(application.getPassword()));
-        System.out.println(application.getPassword());
+        application.setBelong(application.getBelong().replace(" ", ""));
 
         if (count < limit) {
             application.setIsAccepted(true);
@@ -76,7 +73,7 @@ public class ApplicationService {
         if (!passwordEncoder.matches(dto.getPassword(), application.getPassword()))
             throw new AuthenticationException("password does not match");
 
-        ApplicationCondition condition = applicationRepository.getApplicationConditionByEmail(application.getApplicationId());
+        ApplicationCondition condition = applicationRepository.getApplicationConditionById(application.getApplicationId());
         if (condition == null) throw new ApplicationNotFoundException();
         else return condition;
     }

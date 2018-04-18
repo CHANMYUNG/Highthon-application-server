@@ -39,7 +39,7 @@ public interface ApplicationRepository extends JpaRepository<Application, Long> 
             "END)) " +
             "FROM Application a " +
             "WHERE a.applicationId = :applicationId")
-    ApplicationCondition getApplicationConditionByEmail(@Param("applicationId") Long applicationId);
+    ApplicationCondition getApplicationConditionById(@Param("applicationId") Long applicationId);
 
     Optional<Application> findByEmail(String email);
 }
