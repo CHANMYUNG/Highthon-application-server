@@ -1,4 +1,4 @@
-package com.highthon.highthon3server.dto.admin;
+package com.highthon.highthon3server.dto.auth;
 
 
 import com.highthon.highthon3server.domain.admin.Admin;
@@ -13,7 +13,8 @@ import javax.validation.constraints.NotNull;
 @Setter
 @NoArgsConstructor
 public class AdminSignupDto {
-    //TODO: define dto class
+    // TODO: Super 관리자가 새로운 관리자를 초대하는 형식이므로, 초대 코드 필드가 추가되어야 함
+    // TODO: 비밀번호, 휴대전화번호 패턴 Validation 추가
 
     @NotNull
     private String name;

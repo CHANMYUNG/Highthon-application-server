@@ -30,6 +30,7 @@ public class Application {
     @Column(nullable = false, unique = true)
     private String email;
 
+    @Setter
     @Column(nullable = false)
     private String password;
 
@@ -44,7 +45,7 @@ public class Application {
     @Setter
     @Column(columnDefinition = "BOOLEAN NOT NULL DEFAULT 0")
     private Boolean isAccepted = false;
-    
+
     @JsonFormat(pattern = "yyyy-MM-dd kk:mm:ss")
     private LocalDateTime createdDate = LocalDateTime.now();
 

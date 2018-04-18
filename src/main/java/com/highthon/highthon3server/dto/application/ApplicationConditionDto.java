@@ -8,6 +8,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class ApplicationConditionDto {
+    // TODO: 패턴 매칭 Validation 추가. Controller에도 @Valid 추가할 것
     private String email;
     private String password;
 }

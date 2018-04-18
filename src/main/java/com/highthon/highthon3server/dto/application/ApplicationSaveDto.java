@@ -8,11 +8,14 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Getter
 @Setter
 @NoArgsConstructor
 public class ApplicationSaveDto {
+    // TODO: 패턴 매칭 Validation 추가. Controller에도 @Valid 추가할 것
     private String name;
     private Sex sex;
     private String phone;

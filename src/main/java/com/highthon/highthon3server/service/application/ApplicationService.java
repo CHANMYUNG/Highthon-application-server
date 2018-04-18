@@ -5,19 +5,25 @@ import com.highthon.highthon3server.dto.application.ApplicationSaveDto;
 import com.highthon.highthon3server.dto.application.ApplicationConditionDto;
 import com.highthon.highthon3server.dto.application.SaveResponse;
 import com.highthon.highthon3server.exception.ApplicationNotFoundException;
+import com.highthon.highthon3server.exception.AuthenticationException;
 import com.highthon.highthon3server.exception.DuplicatedValueException;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.Optional;
 
 @Service
-@AllArgsConstructor
 public class ApplicationService {
 
     @Autowired
     private ApplicationRepository applicationRepository;
+
+    private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     private static final Integer GAME_DESIGN_LIMIT = 10;
     private static final Integer GAME_DEVELOP_LIMIT = 30;
@@ -37,6 +43,8 @@ public class ApplicationService {
         int count = applicationRepository.countByAreaAndPosition(dto.getArea(), dto.getPosition());
 
         Application application = dto.toEntity();
+        application.setPassword(passwordEncoder.encode(application.getPassword()));
+        System.out.println(application.getPassword());
 
         if (count < limit) {
             application.setIsAccepted(true);
@@ -63,7 +71,12 @@ public class ApplicationService {
 
     @Transactional
     public ApplicationCondition getApplicationCondition(ApplicationConditionDto dto) {
-        ApplicationCondition condition = applicationRepository.getApplicationCondition(dto.getEmail(), dto.getPassword());
+        Application application = applicationRepository.findByEmail(dto.getEmail()).orElse(null);
+        if (application == null) throw new ApplicationNotFoundException();
+        if (!passwordEncoder.matches(dto.getPassword(), application.getPassword()))
+            throw new AuthenticationException("password does not match");
+
+        ApplicationCondition condition = applicationRepository.getApplicationConditionByEmail(application.getApplicationId());
         if (condition == null) throw new ApplicationNotFoundException();
         else return condition;
     }

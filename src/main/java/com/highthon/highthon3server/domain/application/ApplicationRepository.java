@@ -6,6 +6,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Repository
 public interface ApplicationRepository extends JpaRepository<Application, Long> {
@@ -37,6 +38,8 @@ public interface ApplicationRepository extends JpaRepository<Application, Long> 
             "   ELSE NULL " +
             "END)) " +
             "FROM Application a " +
-            "WHERE a.email = :email AND a.password = :password")
-    ApplicationCondition getApplicationCondition(@Param("email") String email, @Param("password") String password);
+            "WHERE a.applicationId = :applicationId")
+    ApplicationCondition getApplicationConditionByEmail(@Param("applicationId") Long applicationId);
+
+    Optional<Application> findByEmail(String email);
 }

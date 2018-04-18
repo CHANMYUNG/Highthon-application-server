@@ -18,8 +18,10 @@ public interface AdminRepository extends CrudRepository<Admin, String> {
             "WHERE a.email = :email")
     void deleteByEmail(@Param("email") String email);
 
-    @Query("SELECT a FROM Admin a " +
-            "WHERE a.email = :email")
-    Optional<Admin> findByEmail(@Param("email") String email);
+    Optional<Admin> findByEmail(String email);
+
+    Integer countByEmail(String email);
+
+    Integer countByPhone(String phone);
 
 }
