@@ -1,7 +1,10 @@
 package com.highthon.highthon3server.service;
 
+import com.highthon.highthon3server.domain.invitation.InvitationRepository;
 import com.highthon.highthon3server.dto.invitation.InvitationDto;
 import com.highthon.highthon3server.service.invitation.InvitationService;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,8 +24,16 @@ public class InvitationServiceTest {
     @Autowired
     private InvitationService invitationService;
 
+    @Autowired
+    private InvitationRepository invitationRepository;
+
+    @Before
+    public void setup() {
+        invitationRepository.deleteAll();
+    }
+
     @Test
-    public void 이메일을_보낸다() {
+    public void 신규_관리자를_추가한다() {
 
         InvitationDto dto = new InvitationDto("nooheat_@naver.com");
 
@@ -36,4 +47,8 @@ public class InvitationServiceTest {
         assertThat(anyException, is(nullValue()));
     }
 
+    @After
+    public void cleanup() {
+        invitationRepository.deleteAll();
+    }
 }

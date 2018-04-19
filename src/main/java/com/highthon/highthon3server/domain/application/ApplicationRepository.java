@@ -11,15 +11,12 @@ import java.util.Optional;
 @Repository
 public interface ApplicationRepository extends JpaRepository<Application, Long> {
 
-    @Query("SELECT count(a) " +
-            "FROM Application a " +
-            "WHERE a.area = :area AND a.position = :position ")
-    Integer countByAreaAndPosition(@Param("area") Area area, @Param("position") Position position);
+    Integer countByAreaAndPosition(Area area, Position position);
 
     @Query("SELECT count(a) " +
             "FROM Application a " +
-            "WHERE a.createdDate <= :createdDate AND a.isAccepted = FALSE ")
-    Integer getWaitingNumber(@Param("createdDate") LocalDateTime createdDate);
+            "WHERE a.createdDate <= :#{#application.createdDate} AND a.isAccepted = FALSE ")
+    Integer getWaitingNumber(@Param("application") Application application);
 
     @Query("SELECT count(a) " +
             "FROM Application a " +

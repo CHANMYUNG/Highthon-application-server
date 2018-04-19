@@ -1,6 +1,7 @@
 package com.highthon.highthon3server.domain;
 
 import com.highthon.highthon3server.domain.admin.*;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,13 +26,9 @@ public class AdminRepositoryTest {
     @Autowired
     private AdminRepository repository;
 
-    @Autowired
-    private AdminRoleRepository adminRoleRepository;
+    private final String TEST_ADMIN_ACCOUNT_EMAIL = "test0@test.com";
 
-
-    private static final String TEST_ADMIN_ACCOUNT_EMAIL = "test1@test.com";
-
-    private static String TEST_ADMIN_ADMIN_ID;
+    private String TEST_ADMIN_ADMIN_ID;
 
     @Before
     public void setup() {
@@ -42,9 +39,9 @@ public class AdminRepositoryTest {
                 .name("testAdmin")
                 .password(new BCryptPasswordEncoder().encode("1234"))
                 .phone("010-0000-0000")
-                .roles(Arrays.asList(new AdminRole(TEST_ADMIN_ACCOUNT_EMAIL, Role.BASIC)))
                 .build();
 
+        admin.addRoles(Role.BASIC);
         repository.save(admin);
 
         TEST_ADMIN_ADMIN_ID = admin.getAdminId();
@@ -78,5 +75,10 @@ public class AdminRepositoryTest {
         Admin admin = repository.findById(TEST_ADMIN_ADMIN_ID).orElse(null);
         System.out.println();
         assertThat(admin, not(nullValue()));
+    }
+
+    @After
+    public void cleanup() {
+//        repository.deleteAll();
     }
 }

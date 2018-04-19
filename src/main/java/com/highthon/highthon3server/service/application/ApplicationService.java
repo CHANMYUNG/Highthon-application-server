@@ -56,7 +56,7 @@ public class ApplicationService {
             application.setIsAccepted(true);
         } else {
             application.setIsAccepted(false);
-            waitingNumber = applicationRepository.getWaitingNumber(application.getCreatedDate());
+            waitingNumber = applicationRepository.getWaitingNumber(application);
         }
 
         applicationRepository.save(application);
