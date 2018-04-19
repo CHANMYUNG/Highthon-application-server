@@ -11,14 +11,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.function.Function;
-import java.util.stream.Collectors;
+import java.util.*;
 
 @Entity
 @Getter
@@ -52,9 +46,11 @@ public class Admin implements UserDetails {
     @UpdateTimestamp
     private LocalDateTime updatedDate;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "email", referencedColumnName = "email")
-    private List<AdminRole> roles;
+    @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
+    @CollectionTable(name = "admin_role", joinColumns = @JoinColumn(name = "admin_id")) // adminId가 들어갈 컬럼 이름
+    @Column(name = "role", nullable = false) // Role 값이 들어갈 컬럼 이름
+    @Enumerated(EnumType.STRING)
+    private Set<Role> roles;
 
     @Column
     private LocalDateTime lastPasswordResetDate;
@@ -69,16 +65,16 @@ public class Admin implements UserDetails {
     }
 
     public void setRoles(Role... roles) {
-        this.roles = Arrays.stream(roles).map(role -> new AdminRole(email, role)).collect(Collectors.toList());
+        this.roles = new HashSet<>(Arrays.asList(roles));
     }
 
     public void addRoles(Role... roles) {
-        List<AdminRole> paramRoles = Arrays.stream(roles).map(role -> new AdminRole(email, role)).collect(Collectors.toList());
         if (this.roles == null) {
-            this.roles = paramRoles;
+            setRoles(roles);
         } else {
-            this.roles.addAll(paramRoles);
+            this.roles.addAll(Arrays.asList(roles));
         }
+
     }
 
     @Override
