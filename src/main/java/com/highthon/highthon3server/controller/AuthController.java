@@ -40,14 +40,29 @@ public class AuthController {
 
 
     @PostMapping("/admin/login")
+    @ResponseBody
     public ResponseEntity<?> createAuthenticationToken(@Valid @RequestBody AdminLoginDto loginRequest) {
 
         authenticate(loginRequest.getEmail(), loginRequest.getPassword());
         final UserDetails userDetails = adminService.loadUserByUsername(loginRequest.getEmail());
         final String token = jwtTokenUtil.generateToken(userDetails);
 
-        return ResponseEntity.ok(token);
+        return ResponseEntity.ok(new Token(token));
     }
+
+    @PostMapping("/signup")
+    @ResponseBody
+    public ResponseEntity<?> create(@Valid @RequestBody AdminSignupDto dto) {
+        //TODO: create service layer class, write some signup logic, and call that at here
+        final String password = dto.getPassword(); // BCryptEncoder로 encoding되기 전의 비밀번호
+        Admin admin = adminService.createAdmin(dto);
+
+        authenticate(admin.getEmail(), password); // BCryptEncoder로 encoding되기 전의 비밀번호
+        final String token = jwtTokenUtil.generateToken(admin);
+
+        return ResponseEntity.ok(new Token(token));
+    }
+
 
     @GetMapping("/admin")
     public String admin() {
@@ -72,22 +87,22 @@ public class AuthController {
         }
     }
 
-    @PostMapping("/signup")
-    public ResponseEntity<?> create(@Valid @RequestBody AdminSignupDto dto) {
-        //TODO: create service layer class, write some signup logic, and call that at here
-        final String password = dto.getPassword(); // BCryptEncoder로 encoding되기 전의 비밀번호
-        Admin admin = adminService.createAdmin(dto);
-
-        authenticate(admin.getEmail(), password); // BCryptEncoder로 encoding되기 전의 비밀번호
-        final String token = jwtTokenUtil.generateToken(admin);
-
-        return ResponseEntity.ok(token);
-    }
-
     @ExceptionHandler({InvitationCodeNotFoundException.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ResponseBody
     public ErrorResponse invitationCodeNotFoundExceptionHandler(HttpServletRequest request, Exception e) {
         return new ErrorResponse(request.getRequestURI(), e.getMessage());
+    }
+
+    private class Token {
+        private String accessToken;
+
+        public String getAccessToken() {
+            return accessToken;
+        }
+
+        Token(String accessToken) {
+            this.accessToken = accessToken;
+        }
     }
 }
