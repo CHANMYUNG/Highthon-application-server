@@ -33,7 +33,6 @@ public class AuthController {
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
 
-
     @Autowired
     private AdminService adminService;
 
@@ -55,7 +54,7 @@ public class AuthController {
 
     @GetMapping("/super")
     public String _super() {
-        return "heelo, super!";
+        return "hello, super!";
     }
 
     private void authenticate(String username, String password) {

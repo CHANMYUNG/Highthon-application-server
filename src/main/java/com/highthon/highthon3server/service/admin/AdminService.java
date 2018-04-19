@@ -3,7 +3,6 @@ package com.highthon.highthon3server.service.admin;
 import com.highthon.highthon3server.domain.admin.Admin;
 import com.highthon.highthon3server.domain.admin.AdminRepository;
 import com.highthon.highthon3server.domain.admin.Role;
-import com.highthon.highthon3server.dto.admin.AdminInviteDto;
 import com.highthon.highthon3server.dto.auth.AdminSignupDto;
 import com.highthon.highthon3server.exception.AdminNotFoundException;
 import com.highthon.highthon3server.exception.DuplicatedValueException;
@@ -75,9 +74,4 @@ public class AdminService implements UserDetailsService {
         return admin;
     }
 
-    @Transactional
-    public void inviteAdmin(AdminInviteDto adminInviteDto) {
-        // TODO: 빈 열 추가
-        // TODO: 이메일 발송
-    }
 }

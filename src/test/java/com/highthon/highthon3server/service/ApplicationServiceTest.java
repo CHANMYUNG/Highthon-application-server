@@ -14,7 +14,7 @@ import static junit.framework.TestCase.assertTrue;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class ApplicationService {
+public class ApplicationServiceTest {
 
     @Autowired
     private ApplicationRepository applicationRepository;

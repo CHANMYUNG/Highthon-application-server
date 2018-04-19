@@ -6,6 +6,7 @@ import io.jsonwebtoken.Clock;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.impl.DefaultClock;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
@@ -25,7 +26,8 @@ public class JwtTokenUtil implements Serializable {
     static final String CLAIM_KEY_CREATED = "iat";
     private static final long serialVersionUID = -3301605591108950415L;
     private Clock clock = DefaultClock.INSTANCE;
-    private String secret = "asd123";
+    @Value("${jwt.secret}")
+    private String secret;
     private Long expiration = 60 * 60 * 24 * 365L;
 
     public String getEmailFromToken(String token) {

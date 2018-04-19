@@ -6,6 +6,7 @@ import com.highthon.highthon3server.security.JwtAuthorizationTokenFilter;
 import com.highthon.highthon3server.security.JwtTokenUtil;
 import com.highthon.highthon3server.security.JwtUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -30,9 +31,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
 
-    private String tokenHeader = "Authorization";
+    @Value("${jwt.tokenHeader}")
+    private String tokenHeader;
 
-    private String authenticationPath = "/admin/login";
+    @Value("${jwt.authenticationPath}")
+    private String authenticationPath;
 
     @Autowired
     private JwtAuthenticationEntryPoint unauthorizedHandler;
@@ -60,6 +63,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/admin").hasAuthority(Role.BASIC.name())
                 .antMatchers("/super").hasAuthority(Role.SUPER.name())
+                .antMatchers(HttpMethod.POST, "/invitation").hasAuthority(Role.SUPER.name())
+                .antMatchers(HttpMethod.DELETE, "/admin/{adminId}").hasAuthority(Role.SUPER.name())
                 .antMatchers("/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
@@ -77,7 +82,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .cacheControl();
     }
 
-    // TODO: JWT 만들 때 권한 정보 추가
     @Override
     public void configure(WebSecurity web) throws Exception {
         web

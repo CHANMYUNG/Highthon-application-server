@@ -8,6 +8,7 @@ import com.highthon.highthon3server.exception.ApplicationNotFoundException;
 import com.highthon.highthon3server.exception.AuthenticationException;
 import com.highthon.highthon3server.exception.DuplicatedValueException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -22,10 +23,18 @@ public class ApplicationService {
 
     private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-    private static final Integer GAME_DESIGN_LIMIT = 10;
-    private static final Integer GAME_DEVELOP_LIMIT = 30;
-    private static final Integer LIFE_DESIGN_LIMIT = 15;
-    private static final Integer LIFE_DEVELOP_LIMIT = 45;
+    @Value("${limit.life-develop}")
+    private Integer LIFE_DEVELOP_LIMIT;
+
+    @Value("${limit.life-design}")
+    private Integer LIFE_DESIGN_LIMIT;
+
+    @Value("${limit.game-design}")
+    private Integer GAME_DEVELOP_LIMIT;
+
+    @Value("${limit.game-design}")
+    private Integer GAME_DESIGN_LIMIT;
+
 
     @Transactional
     public SaveResponse saveApplication(ApplicationSaveDto dto) {
