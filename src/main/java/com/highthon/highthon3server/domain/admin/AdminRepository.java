@@ -20,8 +20,6 @@ public interface AdminRepository extends CrudRepository<Admin, String> {
 
     Optional<Admin> findByEmail(String email);
 
-    Integer countByEmail(String email);
-
-    Integer countByPhone(String phone);
+    Boolean existsByEmail(String email);
 
 }

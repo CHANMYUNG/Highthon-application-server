@@ -21,11 +21,10 @@ public class AdminSignupDto {
     // TODO: 비밀번호, 휴대전화번호 패턴 Validation 추가
 
     @NotNull
-    private String name;
+    private String invitationCode;
 
     @NotNull
-    @Email
-    private String email;
+    private String name;
 
     @NotNull
     private String belong;
@@ -38,13 +37,4 @@ public class AdminSignupDto {
     @Phone
     private String phone;
 
-    public Admin toEntity() {
-        return Admin.builder()
-                .name(name)
-                .email(email)
-                .belong(belong)
-                .password(password)
-                .phone(phone)
-                .build();
-    }
 }

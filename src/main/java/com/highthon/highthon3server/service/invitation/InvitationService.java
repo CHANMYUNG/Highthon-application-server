@@ -30,7 +30,7 @@ public class InvitationService {
     public void inviteNewAdmin(InvitationDto invitationDto) throws MessagingException {
         final String email = invitationDto.getEmail();
 
-        if (adminRepository.countByEmail(email) > 0)
+        if (adminRepository.existsByEmail(email))
             throw new DuplicatedValueException("email");
 
         if (invitationRepository.existsById(email))

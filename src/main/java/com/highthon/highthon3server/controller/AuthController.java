@@ -4,6 +4,7 @@ import com.highthon.highthon3server.domain.admin.Admin;
 import com.highthon.highthon3server.dto.auth.AdminLoginDto;
 import com.highthon.highthon3server.dto.auth.AdminSignupDto;
 import com.highthon.highthon3server.exception.AuthenticationException;
+import com.highthon.highthon3server.exception.InvitationCodeNotFoundException;
 import com.highthon.highthon3server.exceptionHandler.ErrorResponse;
 import com.highthon.highthon3server.security.JwtTokenUtil;
 import com.highthon.highthon3server.service.admin.AdminService;
@@ -21,6 +22,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.Objects;
 
@@ -73,12 +75,19 @@ public class AuthController {
     @PostMapping("/signup")
     public ResponseEntity<?> create(@Valid @RequestBody AdminSignupDto dto) {
         //TODO: create service layer class, write some signup logic, and call that at here
-
+        final String password = dto.getPassword(); // BCryptEncoder로 encoding되기 전의 비밀번호
         Admin admin = adminService.createAdmin(dto);
 
-        authenticate(dto.getEmail(), dto.getPassword());
+        authenticate(admin.getEmail(), password); // BCryptEncoder로 encoding되기 전의 비밀번호
         final String token = jwtTokenUtil.generateToken(admin);
 
         return ResponseEntity.ok(token);
+    }
+
+    @ExceptionHandler({InvitationCodeNotFoundException.class})
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ResponseBody
+    public ErrorResponse invitationCodeNotFoundExceptionHandler(HttpServletRequest request, Exception e) {
+        return new ErrorResponse(request.getRequestURI(), e.getMessage());
     }
 }

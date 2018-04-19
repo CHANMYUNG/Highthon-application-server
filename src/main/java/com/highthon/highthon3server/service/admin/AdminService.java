@@ -3,9 +3,12 @@ package com.highthon.highthon3server.service.admin;
 import com.highthon.highthon3server.domain.admin.Admin;
 import com.highthon.highthon3server.domain.admin.AdminRepository;
 import com.highthon.highthon3server.domain.admin.Role;
+import com.highthon.highthon3server.domain.invitation.Invitation;
+import com.highthon.highthon3server.domain.invitation.InvitationRepository;
 import com.highthon.highthon3server.dto.auth.AdminSignupDto;
 import com.highthon.highthon3server.exception.AdminNotFoundException;
 import com.highthon.highthon3server.exception.DuplicatedValueException;
+import com.highthon.highthon3server.exception.InvitationCodeNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -13,16 +16,19 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.TransactionScoped;
-import javax.transaction.Transactional;
-import java.util.Collection;
+import java.util.Arrays;
+
 
 @Service
 public class AdminService implements UserDetailsService {
 
     @Autowired
     private AdminRepository adminRepository;
+
+    @Autowired
+    private InvitationRepository invitationRepository;
 
     private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
@@ -39,25 +45,32 @@ public class AdminService implements UserDetailsService {
 
     @Transactional
     public Admin createAdmin(AdminSignupDto adminSignupDto) {
-        //TODO: 중복 체크
-        Admin admin = adminSignupDto.toEntity();
-        if (adminRepository.countByEmail(adminSignupDto.getEmail()) > 0) {
-            throw new DuplicatedValueException("email");
-        }
+        final String invitationCode = adminSignupDto.getInvitationCode();
 
-        if (adminRepository.countByPhone(adminSignupDto.getPhone()) > 0) {
-            throw new DuplicatedValueException("phone");
-        }
+        Invitation invitation = invitationRepository.findByInvitationCode(invitationCode).orElse(null);
 
-        if (adminRepository.count() == 0) {
-            admin.setRoles(Role.BASIC, Role.SUPER);
-        } else admin.setRoles(Role.BASIC);
+        if (invitation == null) throw new InvitationCodeNotFoundException();
 
-        admin.setPassword(passwordEncoder.encode(admin.getPassword()));
+        final String email = invitation.getEmail();
 
-        adminRepository.save(admin);
+        invitationRepository.delete(invitation);
 
-        return admin;
+        if (adminRepository.existsByEmail(email)) throw new DuplicatedValueException("email");
+
+        Admin admin = Admin.builder()
+                .email(email)
+                .phone(adminSignupDto.getPhone())
+                .password(passwordEncoder.encode(adminSignupDto.getPassword()))
+                .name(adminSignupDto.getName())
+                .belong(adminSignupDto.getBelong())
+                .build();
+
+        admin.setRoles(Role.BASIC);
+
+        if (adminRepository.count() == 0)
+            admin.addRoles(Role.SUPER);
+
+        return adminRepository.save(admin);
     }
 
     @Transactional

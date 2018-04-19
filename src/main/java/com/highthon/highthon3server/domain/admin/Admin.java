@@ -60,13 +60,12 @@ public class Admin implements UserDetails {
     private LocalDateTime lastPasswordResetDate;
 
     @Builder
-    public Admin(String name, String email, String belong, String password, String phone, List<AdminRole> roles) {
+    public Admin(String name, String email, String belong, String password, String phone) {
         this.name = name;
         this.email = email;
         this.belong = belong;
         this.password = password;
         this.phone = phone;
-        this.roles = roles;
     }
 
     public void setRoles(Role... roles) {
