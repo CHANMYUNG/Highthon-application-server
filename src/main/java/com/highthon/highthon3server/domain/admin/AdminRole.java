@@ -16,7 +16,7 @@ public class AdminRole implements GrantedAuthority {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long adminRoleId;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String email;
 
     @Enumerated(value = EnumType.STRING)

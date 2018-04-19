@@ -11,7 +11,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -32,7 +31,8 @@ public class AdminRepositoryTest {
 
     @Before
     public void setup() {
-        repository.deleteByEmail(TEST_ADMIN_ACCOUNT_EMAIL);
+        repository.deleteAll();
+//        repository.deleteByEmail(TEST_ADMIN_ACCOUNT_EMAIL);
         Admin admin = Admin.builder()
                 .belong("테스트학교")
                 .email(TEST_ADMIN_ACCOUNT_EMAIL)
@@ -79,6 +79,7 @@ public class AdminRepositoryTest {
 
     @After
     public void cleanup() {
-//        repository.deleteAll();
+//        repository.deleteByEmail(TEST_ADMIN_ACCOUNT_EMAIL);
+        repository.deleteAll();
     }
 }
