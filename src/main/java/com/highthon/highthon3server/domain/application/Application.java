@@ -20,13 +20,6 @@ public class Application {
     @Column(nullable = false)
     private String name;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private Sex sex;
-
-    @Column(nullable = false, unique = true)
-    private String phone;
-
     @Column(nullable = false, unique = true)
     private String email;
 
@@ -36,11 +29,22 @@ public class Application {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
+    private Sex sex;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private Area area;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Position position;
+
+    @Column(nullable = false, unique = true)
+    private String phone;
+
+    @Setter
+    @Column(nullable = false)
+    private String belong;
 
     @Setter
     @Column(columnDefinition = "BOOLEAN NOT NULL DEFAULT 0")
@@ -49,22 +53,18 @@ public class Application {
     @JsonFormat(pattern = "yyyy-MM-dd kk:mm:ss")
     private LocalDateTime createdDate = LocalDateTime.now();
 
-    @Setter
-    @Column(nullable = false)
-    private String belong;
-
 
     @Builder
-    public Application(String name, Sex sex, String phone, String email, String password, Area area, Position position, Boolean isAccepted, LocalDateTime createdDate, String belong) {
+    public Application(String name, String email, String password, Sex sex, Area area, Position position, String phone, String belong, Boolean isAccepted, LocalDateTime createdDate) {
         this.name = name;
-        this.sex = sex;
-        this.phone = phone;
         this.email = email;
         this.password = password;
+        this.sex = sex;
         this.area = area;
         this.position = position;
+        this.phone = phone;
+        this.belong = belong;
         this.isAccepted = isAccepted;
         this.createdDate = createdDate;
-        this.belong = belong;
     }
 }

@@ -8,7 +8,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import javax.validation.constraints.NotNull;
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Repository
@@ -37,5 +36,8 @@ public interface ApplicationRepository extends JpaRepository<Application, Long> 
 
     Optional<Application> findByEmail(String email);
 
-    Page<Application> getApplicationByIsAccepted(@NotNull Boolean isAccepted, Pageable pageable);
+    @Query("SELECT a " +
+            "from Application a " +
+            "WHERE a.isAccepted = TRUE")
+    Page<Application> getAcceptedApplications(Pageable pageable);
 }

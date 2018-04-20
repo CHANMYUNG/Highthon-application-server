@@ -7,14 +7,23 @@ import com.highthon.highthon3server.dto.application.SaveResponse;
 import com.highthon.highthon3server.exception.ApplicationNotFoundException;
 import com.highthon.highthon3server.exception.AuthenticationException;
 import com.highthon.highthon3server.exception.DuplicatedValueException;
+import org.hibernate.query.criteria.internal.CriteriaQueryImpl;
+import org.hibernate.query.criteria.internal.OrderImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.*;
 import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -24,6 +33,9 @@ public class ApplicationService {
     private ApplicationRepository applicationRepository;
 
     private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
+    @Autowired
+    private EntityManager em;
 
     @Value("${limit.life-develop}")
     private Integer LIFE_DEVELOP_LIMIT;
@@ -37,6 +49,7 @@ public class ApplicationService {
     @Value("${limit.game-design}")
     private Integer GAME_DESIGN_LIMIT;
 
+    List<String> sortableFeilds = Arrays.asList("applicationId", "name", "email", "sex", "area", "position", "phone", "belong", "createdDate");
 
     @Transactional
     public SaveResponse saveApplication(ApplicationSaveDto dto) {
@@ -90,10 +103,56 @@ public class ApplicationService {
     }
 
     public List<Application> getAcceptedApplications(Pageable pageable) {
-        return applicationRepository.getApplicationByIsAccepted(true, pageable).getContent();
+        return applicationRepository.getAcceptedApplications(pageable).getContent();
     }
 
-    public List<Application> getWaitingApplications(Pageable pageable) {
-        return applicationRepository.getApplicationByIsAccepted(false, pageable).getContent();
+    public List<ApplicationIncludesWaitingNumber> getWaitingApplications(@PageableDefault(sort = "applicationId,desc") Pageable pageable) {
+
+        int page = pageable.getPageNumber();
+        int size = pageable.getPageSize();
+
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<ApplicationIncludesWaitingNumber> q = cb.createQuery(ApplicationIncludesWaitingNumber.class);
+        Root<Application> root = q.from(Application.class);
+
+        List<Order> orders = new ArrayList<>();
+        pageable.getSort().stream().forEach(order -> {
+            if (sortableFeilds.contains(order.getProperty())) {
+                if (order.isAscending()) orders.add((cb.asc(root.get(order.getProperty()))));
+                if (order.isDescending()) orders.add(cb.desc(root.get(order.getProperty())));
+            }
+        });
+
+        Subquery<Long> sq = q.subquery(Long.class);
+        Root<Application> subRoot = sq.from(Application.class);
+
+        sq.select(cb.count(subRoot.get("applicationId")));
+        sq.where(cb.and(
+                cb.isFalse(subRoot.get("isAccepted")),
+                cb.lessThanOrEqualTo(subRoot.get("createdDate"), root.get("createdDate")),
+                cb.equal(subRoot.get("area"), root.get("area")),
+                cb.equal(subRoot.get("position"), root.get("position"))));
+
+        q.select(cb.construct(ApplicationIncludesWaitingNumber.class,
+                root.get("applicationId"),
+                root.get("name"),
+                root.get("email"),
+                root.get("sex"),
+                root.get("area"),
+                root.get("position"),
+                root.get("phone"),
+                root.get("belong"),
+                root.get("isAccepted"),
+                root.get("createdDate"),
+                sq.getSelection()))
+                .where(cb.isFalse(root.get("isAccepted")))
+                .orderBy(orders);
+
+        TypedQuery<ApplicationIncludesWaitingNumber> query = em.createQuery(q);
+
+        query.setFirstResult(page * size);
+        query.setMaxResults(size);
+
+        return query.getResultList();
     }
 }

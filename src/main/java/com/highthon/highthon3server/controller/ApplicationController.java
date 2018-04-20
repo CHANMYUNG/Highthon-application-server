@@ -2,6 +2,7 @@ package com.highthon.highthon3server.controller;
 
 import com.highthon.highthon3server.domain.application.Application;
 import com.highthon.highthon3server.domain.application.ApplicationCondition;
+import com.highthon.highthon3server.domain.application.ApplicationIncludesWaitingNumber;
 import com.highthon.highthon3server.dto.application.ApplicationSaveDto;
 import com.highthon.highthon3server.dto.application.ApplicationConditionDto;
 import com.highthon.highthon3server.dto.application.SaveResponse;
@@ -38,7 +39,7 @@ public class ApplicationController {
     }
 
     @GetMapping("/applications/waiting")
-    public List<Application> getWaitingApplications(Pageable pageable) {
+    public List<ApplicationIncludesWaitingNumber> getWaitingApplications(Pageable pageable) {
         return applicationService.getWaitingApplications(pageable);
     }
 }
