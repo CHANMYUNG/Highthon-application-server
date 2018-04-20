@@ -10,12 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import javax.annotation.security.RolesAllowed;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
@@ -42,7 +37,7 @@ public class AdminRepositoryTest {
                 .phone("010-0000-0000")
                 .build();
 
-        admin.addRoles(Role.BASIC);
+        admin.grantRoles(Role.BASIC);
         repository.save(admin);
 
         TEST_ADMIN_ADMIN_ID = admin.getAdminId();
@@ -61,7 +56,7 @@ public class AdminRepositoryTest {
     public void 권한_추가하기() {
         Admin admin = repository.findByEmail(TEST_ADMIN_ACCOUNT_EMAIL).orElse(null);
 
-        admin.addRoles(Role.SUPER);
+        admin.grantRoles(Role.SUPER);
 
         repository.save(admin);
 

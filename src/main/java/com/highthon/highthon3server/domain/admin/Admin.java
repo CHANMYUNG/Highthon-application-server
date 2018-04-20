@@ -68,13 +68,21 @@ public class Admin implements UserDetails {
         this.roles = new HashSet<>(Arrays.asList(roles));
     }
 
-    public void addRoles(Role... roles) {
+    public void grantRoles(Role... roles) {
         if (this.roles == null) {
             setRoles(roles);
         } else {
             this.roles.addAll(Arrays.asList(roles));
         }
 
+    }
+
+    public void refuseRoles(Role... roles) {
+        if (this.roles == null) {
+            this.roles = new HashSet<>();
+        } else {
+            this.roles.removeAll(Arrays.asList(roles));
+        }
     }
 
     @Override

@@ -18,8 +18,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
-
 
 @Service
 public class AdminService implements UserDetailsService {
@@ -68,7 +66,7 @@ public class AdminService implements UserDetailsService {
         admin.setRoles(Role.BASIC);
 
         if (adminRepository.count() == 0)
-            admin.addRoles(Role.SUPER);
+            admin.grantRoles(Role.SUPER);
 
         return adminRepository.save(admin);
     }

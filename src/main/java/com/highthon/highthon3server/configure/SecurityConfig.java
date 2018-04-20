@@ -63,6 +63,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/admin").hasAuthority(Role.BASIC.name())
                 .antMatchers("/super").hasAuthority(Role.SUPER.name())
+                .antMatchers(HttpMethod.POST, "/admin/{adminId}/authority/super").hasAuthority(Role.SUPER.name())
                 .antMatchers(HttpMethod.POST, "/invitation").hasAuthority(Role.SUPER.name())
                 .antMatchers(HttpMethod.DELETE, "/admin/{adminId}").hasAuthority(Role.SUPER.name())
                 .antMatchers("/**").permitAll()
