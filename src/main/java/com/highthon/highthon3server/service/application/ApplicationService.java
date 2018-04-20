@@ -9,11 +9,13 @@ import com.highthon.highthon3server.exception.AuthenticationException;
 import com.highthon.highthon3server.exception.DuplicatedValueException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 @Service
 public class ApplicationService {
@@ -40,9 +42,9 @@ public class ApplicationService {
     public SaveResponse saveApplication(ApplicationSaveDto dto) {
         SaveResponse response = null;
         Integer waitingNumber = null;
-        if (applicationRepository.countByPhone(dto.getPhone()) > 0)
+        if (applicationRepository.existsByPhone(dto.getPhone()))
             throw new DuplicatedValueException("phone");
-        if (applicationRepository.countByEmail(dto.getEmail()) > 0)
+        if (applicationRepository.existsByEmail(dto.getEmail()))
             throw new DuplicatedValueException("email");
 
         int limit = getLimit(dto.getArea(), dto.getPosition());
@@ -85,5 +87,13 @@ public class ApplicationService {
         ApplicationCondition condition = applicationRepository.getApplicationConditionById(application.getApplicationId());
         if (condition == null) throw new ApplicationNotFoundException();
         else return condition;
+    }
+
+    public List<Application> getAcceptedApplications(Pageable pageable) {
+        return applicationRepository.getApplicationByIsAccepted(true, pageable).getContent();
+    }
+
+    public List<Application> getWaitingApplications(Pageable pageable) {
+        return applicationRepository.getApplicationByIsAccepted(false, pageable).getContent();
     }
 }

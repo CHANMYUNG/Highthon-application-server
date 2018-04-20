@@ -1,10 +1,13 @@
 package com.highthon.highthon3server.domain.application;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -18,15 +21,9 @@ public interface ApplicationRepository extends JpaRepository<Application, Long> 
             "WHERE a.createdDate <= :#{#application.createdDate} AND a.isAccepted = FALSE ")
     Integer getWaitingNumber(@Param("application") Application application);
 
-    @Query("SELECT count(a) " +
-            "FROM Application a " +
-            "WHERE a.phone = :phone")
-    Integer countByPhone(@Param("phone") String phone);
+    Boolean existsByPhone(@NotNull String pheon);
 
-    @Query("SELECT count(a) " +
-            "FROM Application a " +
-            "WHERE a.email = :email")
-    Integer countByEmail(@Param("email") String email);
+    Boolean existsByEmail(@NotNull String email);
 
     @Query("SELECT new com.highthon.highthon3server.domain.application.ApplicationCondition(a.name, a.isAccepted, " +
             "(CASE " +
@@ -39,4 +36,6 @@ public interface ApplicationRepository extends JpaRepository<Application, Long> 
     ApplicationCondition getApplicationConditionById(@Param("applicationId") Long applicationId);
 
     Optional<Application> findByEmail(String email);
+
+    Page<Application> getApplicationByIsAccepted(@NotNull Boolean isAccepted, Pageable pageable);
 }
