@@ -36,8 +36,4 @@ public interface ApplicationRepository extends JpaRepository<Application, Long> 
 
     Optional<Application> findByEmail(String email);
 
-    @Query("SELECT a " +
-            "from Application a " +
-            "WHERE a.isAccepted = TRUE")
-    Page<Application> getAcceptedApplications(Pageable pageable);
 }

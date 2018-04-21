@@ -7,8 +7,6 @@ import com.highthon.highthon3server.dto.application.SaveResponse;
 import com.highthon.highthon3server.exception.ApplicationNotFoundException;
 import com.highthon.highthon3server.exception.AuthenticationException;
 import com.highthon.highthon3server.exception.DuplicatedValueException;
-import org.hibernate.query.criteria.internal.CriteriaQueryImpl;
-import org.hibernate.query.criteria.internal.OrderImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
@@ -17,14 +15,14 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
-import javax.transaction.Transactional;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ApplicationService {
@@ -49,7 +47,7 @@ public class ApplicationService {
     @Value("${limit.game-design}")
     private Integer GAME_DESIGN_LIMIT;
 
-    List<String> sortableFeilds = Arrays.asList("applicationId", "name", "email", "sex", "area", "position", "phone", "belong", "createdDate");
+    final List<String> SORTABLE_APPLICATION_FIELDS = Arrays.asList("applicationId", "name", "email", "sex", "area", "position", "phone", "belong", "createdDate");
 
     @Transactional
     public SaveResponse saveApplication(ApplicationSaveDto dto) {
@@ -102,26 +100,36 @@ public class ApplicationService {
         else return condition;
     }
 
+    @Transactional
     public List<Application> getAcceptedApplications(Pageable pageable) {
-        return applicationRepository.getAcceptedApplications(pageable).getContent();
+
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<Application> q = cb.createQuery(Application.class);
+        Root root = q.from(Application.class);
+
+        final int page = pageable.getPageNumber();
+        final int size = pageable.getPageSize();
+        final List<Order> orders = getSortableOrderList(SORTABLE_APPLICATION_FIELDS, pageable.getSort(), root);
+
+        q.orderBy(orders);
+        TypedQuery<Application> query = em.createQuery(q);
+
+        query.setFirstResult(page * size);
+        query.setMaxResults(size);
+
+        return query.getResultList();
     }
 
+    @Transactional
     public List<ApplicationIncludesWaitingNumber> getWaitingApplications(@PageableDefault(sort = "applicationId,desc") Pageable pageable) {
-
-        int page = pageable.getPageNumber();
-        int size = pageable.getPageSize();
 
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<ApplicationIncludesWaitingNumber> q = cb.createQuery(ApplicationIncludesWaitingNumber.class);
         Root<Application> root = q.from(Application.class);
 
-        List<Order> orders = new ArrayList<>();
-        pageable.getSort().stream().forEach(order -> {
-            if (sortableFeilds.contains(order.getProperty())) {
-                if (order.isAscending()) orders.add((cb.asc(root.get(order.getProperty()))));
-                if (order.isDescending()) orders.add(cb.desc(root.get(order.getProperty())));
-            }
-        });
+        final int page = pageable.getPageNumber();
+        final int size = pageable.getPageSize();
+        final List<Order> orders = getSortableOrderList(SORTABLE_APPLICATION_FIELDS, pageable.getSort(), root);
 
         Subquery<Long> sq = q.subquery(Long.class);
         Root<Application> subRoot = sq.from(Application.class);
@@ -154,5 +162,19 @@ public class ApplicationService {
         query.setMaxResults(size);
 
         return query.getResultList();
+    }
+
+    private List<Order> getSortableOrderList(List<String> sortableFields, Sort sort, Root root) {
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+
+        return sort.stream().filter(sortElement -> sortableFields.contains(sortElement.getProperty()))
+                .map(sortElement -> {
+                    if (sortElement.isAscending()) return cb.asc(root.get(sortElement.getProperty()));
+                    else return cb.desc(root.get(sortElement.getProperty()));
+
+                    // org.springframework.data.domain.Sort는 Direction 값 Default로 Direction.ASC를 가짐
+                    // org.springframework.data.domain.Direction 은 Enum 클래스라 Direction.ASC 아니면 Direction.DESC임. 다른 케이스 없음
+                })
+                .collect(Collectors.toList());
     }
 }
