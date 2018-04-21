@@ -17,7 +17,9 @@ public interface ApplicationRepository extends JpaRepository<Application, Long> 
 
     @Query("SELECT count(a) " +
             "FROM Application a " +
-            "WHERE a.createdDate <= :#{#application.createdDate} AND a.isAccepted = FALSE ")
+            "WHERE a.createdDate <= :#{#application.createdDate} AND a.isAccepted = FALSE " +
+            "AND a.area = :#{#application.area} " +
+            "AND a.position = :#{#application.position}")
     Integer getWaitingNumber(@Param("application") Application application);
 
     Boolean existsByPhone(@NotNull String pheon);
@@ -35,5 +37,7 @@ public interface ApplicationRepository extends JpaRepository<Application, Long> 
     ApplicationCondition getApplicationConditionById(@Param("applicationId") Long applicationId);
 
     Optional<Application> findByEmail(String email);
+
+    Optional<Application> findFirstByAreaAndPositionAndIsAcceptedIsFalseOrderByCreatedDate(Area area, Position position);
 
 }

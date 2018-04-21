@@ -42,4 +42,9 @@ public class ApplicationController {
     public List<ApplicationIncludesWaitingNumber> getWaitingApplications(Pageable pageable) {
         return applicationService.getWaitingApplications(pageable);
     }
+
+    @DeleteMapping("/applications/{applicationId}")
+    public void deleteApplication(@PathVariable("applicationId") Long applicationId) {
+        applicationService.deleteApplicationAndUpdateLatestWaitingApplicationToAccepted(applicationId);
+    }
 }

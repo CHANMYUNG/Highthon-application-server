@@ -57,7 +57,7 @@ public class Application {
 
 
     @Builder
-    public Application(String name, String email, String password, Sex sex, Area area, Position position, String phone, String belong, Boolean isAccepted, LocalDateTime createdDate) {
+    public Application(String name, String email, String password, Sex sex, Area area, Position position, String phone, String belong, Boolean isAccepted) {
         this.name = name;
         this.email = email;
         this.password = password;
@@ -67,6 +67,5 @@ public class Application {
         this.phone = phone;
         this.belong = belong;
         this.isAccepted = isAccepted;
-        this.createdDate = createdDate;
     }
 }

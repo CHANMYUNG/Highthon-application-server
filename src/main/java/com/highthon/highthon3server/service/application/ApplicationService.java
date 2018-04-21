@@ -51,7 +51,7 @@ public class ApplicationService {
 
     @Transactional
     public SaveResponse saveApplication(ApplicationSaveDto dto) {
-        SaveResponse response = null;
+
         Integer waitingNumber = null;
         if (applicationRepository.existsByPhone(dto.getPhone()))
             throw new DuplicatedValueException("phone");
@@ -65,17 +65,13 @@ public class ApplicationService {
         application.setPassword(passwordEncoder.encode(application.getPassword()));
         application.setBelong(application.getBelong().replace(" ", ""));
 
-        if (count < limit) {
-            application.setIsAccepted(true);
-        } else {
-            application.setIsAccepted(false);
-            waitingNumber = applicationRepository.getWaitingNumber(application);
-        }
+        application.setIsAccepted(count < limit);
 
         applicationRepository.save(application);
-        response = new SaveResponse(true, waitingNumber);
 
-        return response;
+        if (!application.getIsAccepted()) waitingNumber = applicationRepository.getWaitingNumber(application);
+
+        return new SaveResponse(application.getIsAccepted(), waitingNumber);
     }
 
     private int getLimit(Area area, Position position) {
@@ -176,5 +172,26 @@ public class ApplicationService {
                     // org.springframework.data.domain.Direction 은 Enum 클래스라 Direction.ASC 아니면 Direction.DESC임. 다른 케이스 없음
                 })
                 .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public void deleteApplicationAndUpdateLatestWaitingApplicationToAccepted(Long applicationId) {
+        Application originApplication = applicationRepository.findById(applicationId).orElse(null);
+
+        if (originApplication == null) {
+            throw new ApplicationNotFoundException(applicationId);
+        }
+
+        applicationRepository.delete(originApplication);
+
+        if (!originApplication.getIsAccepted()) return;
+
+        Application latestWaitingApplication = applicationRepository.findFirstByAreaAndPositionAndIsAcceptedIsFalseOrderByCreatedDate(originApplication.getArea(), originApplication.getPosition()).orElse(null);
+
+        if (latestWaitingApplication == null) return;
+
+        latestWaitingApplication.setIsAccepted(true);
+
+        applicationRepository.save(latestWaitingApplication);
     }
 }

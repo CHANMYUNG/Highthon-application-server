@@ -12,7 +12,7 @@ public class AdminController {
     private AdminService adminService;
 
     @DeleteMapping("/admin/{adminId}")
-    public void deleteAdmin(@PathVariable String adminId) {
+    public void deleteAdmin(@PathVariable("adminId") String adminId) {
         adminService.deleteAdmin(adminId);
     }
 }

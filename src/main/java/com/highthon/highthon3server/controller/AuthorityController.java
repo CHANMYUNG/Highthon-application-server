@@ -23,7 +23,7 @@ public class AuthorityController {
 
 
     @PostMapping("/admin/{adminId}/authority/super")
-    public void delegateSuperAuthority(@PathVariable String adminId, HttpServletRequest request) {
+    public void delegateSuperAuthority(@PathVariable("adminId") String adminId, HttpServletRequest request) {
         String token = request.getHeader(tokenHeader).substring(7);
         String email = jwtTokenUtil.getEmailFromToken(token);
         authorityService.grantSuperAuthorityToOtherAdminAndRefuseMine(email, adminId);

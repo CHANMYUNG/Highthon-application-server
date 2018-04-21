@@ -9,7 +9,7 @@ import java.lang.annotation.*;
 @Documented
 @Constraint(validatedBy = BelongValidator.class)
 public @interface Belong {
-    String message() default "이메일 형식이 아닙니다.";
+    String message() default "-등학교 형식이 아닙니다.";
 
     Class<?>[] groups() default {};
 
