@@ -30,7 +30,7 @@ public class JwtTokenUtil implements Serializable {
     private String secret;
     private Long expiration = 60 * 60 * 24 * 365L;
 
-    public String getEmailFromToken(String token) {
+    public String getAdminIdFromToken(String token) {
         return getClaimFromToken(token, Claims::getSubject); // subject에 이메일 저장함
     }
 
@@ -89,11 +89,11 @@ public class JwtTokenUtil implements Serializable {
 
     public Boolean validateToken(String token, UserDetails userDetails) {
         Admin admin = (Admin) userDetails;
-        final String email = getEmailFromToken(token);
+        final String adminId = getAdminIdFromToken(token);
         final LocalDateTime created = getIssuedAtDateFromToken(token);
 
         return (
-                email.equals(admin.getEmail())
+                adminId.equals(admin.getAdminId())
                         && !isTokenExpired(token)
                         && !isCreatedBeforeLastPasswordReset(created, admin.getLastPasswordResetDate())
         );

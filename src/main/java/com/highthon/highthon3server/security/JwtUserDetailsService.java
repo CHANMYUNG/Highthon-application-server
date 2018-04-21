@@ -15,11 +15,11 @@ public class JwtUserDetailsService implements UserDetailsService {
     private AdminRepository adminRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        Admin admin = adminRepository.findByEmail(email).orElse(null);
+    public UserDetails loadUserByUsername(String AdminId) throws UsernameNotFoundException {
+        Admin admin = adminRepository.findById(AdminId).orElse(null);
 
         if (admin == null) {
-            throw new UsernameNotFoundException(String.format("No user found with email '%s'", email));
+            throw new UsernameNotFoundException(String.format("No user found with AdminId '%s'", AdminId));
         } else {
             return admin;
         }

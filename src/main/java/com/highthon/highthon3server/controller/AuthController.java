@@ -43,8 +43,8 @@ public class AuthController {
     @ResponseBody
     public ResponseEntity<?> createAuthenticationToken(@Valid @RequestBody AdminLoginDto loginRequest) {
 
-        authenticate(loginRequest.getEmail(), loginRequest.getPassword());
         final UserDetails userDetails = adminService.loadUserByUsername(loginRequest.getEmail());
+        authenticate(userDetails.getUsername(), loginRequest.getPassword());
         final String token = jwtTokenUtil.generateToken(userDetails);
 
         return ResponseEntity.ok(new Token(token));
@@ -56,8 +56,9 @@ public class AuthController {
         //TODO: create service layer class, write some signup logic, and call that at here
         final String password = dto.getPassword(); // BCryptEncoder로 encoding되기 전의 비밀번호
         Admin admin = adminService.createAdmin(dto);
-
-        authenticate(admin.getEmail(), password); // BCryptEncoder로 encoding되기 전의 비밀번호
+        System.out.println(admin.getEmail());
+        System.out.println(password);
+        authenticate(admin.getUsername(), password); // BCryptEncoder로 encoding되기 전의 비밀번호
         final String token = jwtTokenUtil.generateToken(admin);
 
         return ResponseEntity.ok(new Token(token));

@@ -1,6 +1,7 @@
 package com.highthon.highthon3server.controller;
 
 
+import com.highthon.highthon3server.exception.SelfHandleException;
 import com.highthon.highthon3server.security.JwtTokenUtil;
 import com.highthon.highthon3server.service.authority.AuthorityService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,8 @@ public class AuthorityController {
     @PostMapping("/admin/{adminId}/authority/super")
     public void delegateSuperAuthority(@PathVariable("adminId") String adminId, HttpServletRequest request) {
         String token = request.getHeader(tokenHeader).substring(7);
-        String email = jwtTokenUtil.getEmailFromToken(token);
-        authorityService.grantSuperAuthorityToOtherAdminAndRefuseMine(email, adminId);
+        String myId = jwtTokenUtil.getAdminIdFromToken(token);
+        if (myId.equals(adminId)) throw new SelfHandleException();
+        authorityService.grantSuperAuthorityToOtherAdminAndRefuseMine(myId, adminId);
     }
 }

@@ -15,7 +15,7 @@ public class AuthorityService {
     private AdminRepository adminRepository;
 
     @Transactional
-    public void grantSuperAuthorityToOtherAdminAndRefuseMine(String email, String adminId) {
+    public void grantSuperAuthorityToOtherAdminAndRefuseMine(String originId, String adminId) {
         Admin target = adminRepository.findById(adminId).orElse(null);
 
         if (target == null) throw new AdminNotFoundException();
@@ -24,7 +24,7 @@ public class AuthorityService {
 
         adminRepository.save(target);
 
-        Admin origin = adminRepository.findByEmail(email).orElse(null);
+        Admin origin = adminRepository.findById(originId).orElse(null);
 
         assert origin != null;
 

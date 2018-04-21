@@ -37,13 +37,13 @@ public class JwtAuthorizationTokenFilter extends OncePerRequestFilter {
 
         final String requestHeader = request.getHeader(this.tokenHeader);
 
-        String email = null;
+        String adminId = null;
         String authToken = null;
 
         if (requestHeader != null && requestHeader.startsWith("Bearer ")) {
             authToken = requestHeader.substring(7);
             try {
-                email = jwtTokenUtil.getEmailFromToken(authToken);
+                adminId = jwtTokenUtil.getAdminIdFromToken(authToken);
             } catch (IllegalArgumentException e) {
                 logger.error("an error occurred during getting username from token", e);
             } catch (ExpiredJwtException e) {
@@ -53,14 +53,14 @@ public class JwtAuthorizationTokenFilter extends OncePerRequestFilter {
             logger.warn("couldn't find bearer string, will ignore the header");
         }
 
-        logger.debug("checking authentication for user '{}'", email);
-        if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+        logger.debug("checking authentication for user '{}'", adminId);
+        if (adminId != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             logger.debug("security context was null, so authorizating user");
 
             UserDetails userDetails;
 
             try {
-                userDetails = userDetailsService.loadUserByUsername(email);
+                userDetails = userDetailsService.loadUserByUsername(adminId);
             } catch (UsernameNotFoundException e) {
                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
                 return;
@@ -69,7 +69,7 @@ public class JwtAuthorizationTokenFilter extends OncePerRequestFilter {
             if (jwtTokenUtil.validateToken(authToken, userDetails)) {
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                logger.info("authorized user '{}', setting security context", email);
+                logger.info("authorized user '{}', setting security context", adminId);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         }

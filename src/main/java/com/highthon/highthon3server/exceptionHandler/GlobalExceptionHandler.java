@@ -4,6 +4,7 @@ package com.highthon.highthon3server.exceptionHandler;
 import com.highthon.highthon3server.exception.ApplicationNotFoundException;
 import com.highthon.highthon3server.exception.AuthenticationException;
 import com.highthon.highthon3server.exception.DuplicatedValueException;
+import com.highthon.highthon3server.exception.SelfHandleException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -22,13 +23,19 @@ public class GlobalExceptionHandler {
         return new ErrorResponse(request.getRequestURI(), exception.getMessage());
     }
 
-    @ExceptionHandler(value = ApplicationNotFoundException.class)
+    @ExceptionHandler(value = {ApplicationNotFoundException.class})
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @ResponseBody
     protected ErrorResponse applicationNotFoundException(HttpServletRequest request, Exception exception) {
         return new ErrorResponse(request.getRequestURI(), exception.getMessage());
     }
 
+    @ExceptionHandler(value = {SelfHandleException.class})
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    protected ErrorResponse selfHandleException(HttpServletRequest request, Exception exception) {
+        return new ErrorResponse(request.getRequestURI(), exception.getMessage());
+    }
 
     @ExceptionHandler(value = {AuthenticationException.class})
     @ResponseStatus(value = HttpStatus.UNAUTHORIZED)
