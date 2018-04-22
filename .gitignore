@@ -122,3 +122,6 @@ hs_err_pid*
 
 # application.yml
 /src/main/resources/application.yml
+
+# uploads
+/uploads/

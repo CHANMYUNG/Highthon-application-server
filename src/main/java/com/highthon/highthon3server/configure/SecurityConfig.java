@@ -66,6 +66,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/applications/**").hasAuthority(Role.BASIC.name())
                 .antMatchers(HttpMethod.POST, "/admin/{adminId}/authority/super").hasAuthority(Role.SUPER.name())
                 .antMatchers(HttpMethod.POST, "/invitation").hasAuthority(Role.SUPER.name())
+                .antMatchers(HttpMethod.POST, "/upload").hasAuthority(Role.BASIC.name())
                 .antMatchers(HttpMethod.DELETE, "/admin/{adminId}").hasAuthority(Role.SUPER.name())
                 .antMatchers("/**").permitAll()
                 .anyRequest().authenticated()

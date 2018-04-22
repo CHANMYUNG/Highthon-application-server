@@ -12,9 +12,9 @@ public class ErrorResponse {
     private String message;
     private String path;
 
-    public ErrorResponse(String path, String message) {
+    public ErrorResponse(String path, Exception e) {
         this.path = path;
-        this.message = message;
+        this.message = e.getMessage();
         this.timestamp = LocalDateTime.now();
     }
 }

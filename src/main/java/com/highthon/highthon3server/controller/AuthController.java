@@ -92,7 +92,7 @@ public class AuthController {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ResponseBody
     public ErrorResponse invitationCodeNotFoundExceptionHandler(HttpServletRequest request, Exception e) {
-        return new ErrorResponse(request.getRequestURI(), e.getMessage());
+        return new ErrorResponse(request.getRequestURI(), e);
     }
 
     private class Token {

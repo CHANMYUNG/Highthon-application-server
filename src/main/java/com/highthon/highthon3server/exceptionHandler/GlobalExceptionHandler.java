@@ -19,28 +19,28 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = DuplicatedValueException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     @ResponseBody
-    protected ErrorResponse duplicatedValueException(HttpServletRequest request, Exception exception) {
-        return new ErrorResponse(request.getRequestURI(), exception.getMessage());
+    protected ErrorResponse duplicatedValueException(HttpServletRequest request, Exception e) {
+        return new ErrorResponse(request.getRequestURI(), e);
     }
 
     @ExceptionHandler(value = {ApplicationNotFoundException.class})
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @ResponseBody
-    protected ErrorResponse applicationNotFoundException(HttpServletRequest request, Exception exception) {
-        return new ErrorResponse(request.getRequestURI(), exception.getMessage());
+    protected ErrorResponse applicationNotFoundException(HttpServletRequest request, Exception e) {
+        return new ErrorResponse(request.getRequestURI(), e);
     }
 
     @ExceptionHandler(value = {SelfHandleException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
-    protected ErrorResponse selfHandleException(HttpServletRequest request, Exception exception) {
-        return new ErrorResponse(request.getRequestURI(), exception.getMessage());
+    protected ErrorResponse selfHandleException(HttpServletRequest request, Exception e) {
+        return new ErrorResponse(request.getRequestURI(), e);
     }
 
     @ExceptionHandler(value = {AuthenticationException.class})
     @ResponseStatus(value = HttpStatus.UNAUTHORIZED)
     @ResponseBody
-    protected ErrorResponse authenticationExceptionHandler(HttpServletRequest request, Exception exception) {
-        return new ErrorResponse(request.getRequestURI(), exception.getMessage());
+    protected ErrorResponse authenticationExceptionHandler(HttpServletRequest request, Exception e) {
+        return new ErrorResponse(request.getRequestURI(), e);
     }
 }
