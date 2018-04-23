@@ -78,7 +78,7 @@ public class AdminService implements UserDetailsService {
         adminRepository.delete(admin);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public Admin readAdmin(String adminId) {
         Admin admin = adminRepository.findById(adminId).orElse(null);
         if (admin == null) throw new AdminNotFoundException(adminId);

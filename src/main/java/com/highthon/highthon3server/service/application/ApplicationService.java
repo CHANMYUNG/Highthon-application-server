@@ -84,7 +84,7 @@ public class ApplicationService {
         }
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public ApplicationCondition getApplicationCondition(ApplicationConditionDto dto) {
         Application application = applicationRepository.findByEmail(dto.getEmail()).orElse(null);
         if (application == null) throw new ApplicationNotFoundException();
@@ -96,7 +96,7 @@ public class ApplicationService {
         else return condition;
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public List<Application> getAcceptedApplications(Pageable pageable) {
 
         CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -116,7 +116,7 @@ public class ApplicationService {
         return query.getResultList();
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public List<ApplicationIncludesWaitingNumber> getWaitingApplications(@PageableDefault(sort = "applicationId,desc") Pageable pageable) {
 
         CriteriaBuilder cb = em.getCriteriaBuilder();
