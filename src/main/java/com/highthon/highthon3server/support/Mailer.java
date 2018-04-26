@@ -4,11 +4,15 @@ import com.highthon.highthon3server.validator.Email;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import javax.activation.DataHandler;
+import javax.activation.FileDataSource;
 import javax.mail.*;
-import javax.mail.internet.AddressException;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
-import java.util.Properties;
+import javax.mail.internet.*;
+import java.io.UnsupportedEncodingException;
+import java.util.*;
+import java.util.function.Function;
+import java.util.function.IntFunction;
+import java.util.stream.Collectors;
 
 @Component
 public class Mailer {
@@ -74,5 +78,40 @@ public class Mailer {
         // send the message
         Transport.send(message);
 
+    }
+
+    public void sendEmail(String title, List<String> to, String content, List<String> filenames) throws MessagingException {
+
+        initializeSession();
+        initializeMessage();
+
+        message.addRecipients(Message.RecipientType.TO, InternetAddress.parse(to.stream().collect(Collectors.joining(","))));
+
+        message.setSubject(title);
+
+        Multipart mp = new MimeMultipart();
+
+        MimeBodyPart messageBody = new MimeBodyPart();
+        messageBody.setText(content);
+
+        mp.addBodyPart(messageBody);
+
+        String[] notnullFilenames = filenames.stream().filter(Objects::nonNull).toArray(String[]::new);
+
+        for (String filename : notnullFilenames) {
+            try {
+                MimeBodyPart filePart = new MimeBodyPart();
+                FileDataSource dataSource = new FileDataSource("uploads/" + filename);
+                filePart.setDataHandler(new DataHandler(dataSource));
+                filePart.setFileName(MimeUtility.encodeText(filename, "UTF-8", "B"));
+                mp.addBodyPart(filePart);
+            } catch (UnsupportedEncodingException e) {
+                throw new MessageRemovedException(e.getMessage());
+            }
+        }
+
+        message.setContent(mp, "text/html;charset=utf8");
+
+        Transport.send(message);
     }
 }

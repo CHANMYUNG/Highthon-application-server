@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import javax.validation.constraints.NotNull;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -35,6 +36,15 @@ public interface ApplicationRepository extends JpaRepository<Application, Long> 
             "FROM Application a " +
             "WHERE a.applicationId = :applicationId")
     ApplicationCondition getApplicationConditionById(@Param("applicationId") Long applicationId);
+
+    @Query("SELECT a.email FROM Application  a WHERE a.isAccepted = TRUE")
+    List<String> getEmailListByIsAcceptedIsTrue();
+
+    @Query("SELECT a.email FROM Application  a WHERE a.isAccepted = FALSE")
+    List<String> getEmailListByIsAcceptedIsFalse();
+
+    @Query("SELECT a.email FROM Application  a")
+    List<String> getAllEmailList();
 
     Optional<Application> findByEmail(String email);
 
