@@ -16,9 +16,9 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.authentication.event.AuthenticationFailureExpiredEvent;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -56,8 +56,6 @@ public class AuthController {
         //TODO: create service layer class, write some signup logic, and call that at here
         final String password = dto.getPassword(); // BCryptEncoder로 encoding되기 전의 비밀번호
         Admin admin = adminService.createAdmin(dto);
-        System.out.println(admin.getEmail());
-        System.out.println(password);
         authenticate(admin.getUsername(), password); // BCryptEncoder로 encoding되기 전의 비밀번호
         final String token = jwtTokenUtil.generateToken(admin);
 
@@ -75,7 +73,7 @@ public class AuthController {
         return "hello, super!";
     }
 
-    private void authenticate(String username, String password) {
+    private void authenticate(String username, String password) throws UsernameNotFoundException {
         Objects.requireNonNull(username);
         Objects.requireNonNull(password);
 
