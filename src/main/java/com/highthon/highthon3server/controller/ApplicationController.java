@@ -4,7 +4,7 @@ import com.highthon.highthon3server.domain.application.Application;
 import com.highthon.highthon3server.domain.application.ApplicationCondition;
 import com.highthon.highthon3server.domain.application.ApplicationIncludesWaitingNumber;
 import com.highthon.highthon3server.dto.application.ApplicationSaveDto;
-import com.highthon.highthon3server.dto.application.ApplicationConditionDto;
+import com.highthon.highthon3server.dto.application.GetApplicationConditionDto;
 import com.highthon.highthon3server.dto.application.SaveResponse;
 import com.highthon.highthon3server.service.application.ApplicationService;
 import lombok.NoArgsConstructor;
@@ -28,8 +28,8 @@ public class ApplicationController {
         return new ResponseEntity<SaveResponse>(applicationService.saveApplication(dto), HttpStatus.CREATED);
     }
 
-    @GetMapping("/apply/status")
-    public ResponseEntity<ApplicationCondition> getApplicationCondition(@ModelAttribute ApplicationConditionDto dto) {
+    @PostMapping("/apply/status")
+    public ResponseEntity<ApplicationCondition> getApplicationCondition(@Valid @RequestBody GetApplicationConditionDto dto) {
         return new ResponseEntity<ApplicationCondition>(applicationService.getApplicationCondition(dto), HttpStatus.OK);
     }
 

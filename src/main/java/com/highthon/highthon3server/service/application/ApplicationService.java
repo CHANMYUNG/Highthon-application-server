@@ -2,7 +2,7 @@ package com.highthon.highthon3server.service.application;
 
 import com.highthon.highthon3server.domain.application.*;
 import com.highthon.highthon3server.dto.application.ApplicationSaveDto;
-import com.highthon.highthon3server.dto.application.ApplicationConditionDto;
+import com.highthon.highthon3server.dto.application.GetApplicationConditionDto;
 import com.highthon.highthon3server.dto.application.SaveResponse;
 import com.highthon.highthon3server.exception.ApplicationNotFoundException;
 import com.highthon.highthon3server.exception.AuthenticationException;
@@ -85,7 +85,7 @@ public class ApplicationService {
     }
 
     @Transactional(readOnly = true)
-    public ApplicationCondition getApplicationCondition(ApplicationConditionDto dto) {
+    public ApplicationCondition getApplicationCondition(GetApplicationConditionDto dto) {
         Application application = applicationRepository.findByEmail(dto.getEmail()).orElse(null);
         if (application == null) throw new ApplicationNotFoundException();
         if (!passwordEncoder.matches(dto.getPassword(), application.getPassword()))

@@ -6,15 +6,17 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
 @Getter
 @Setter
 @NoArgsConstructor
-public class ApplicationConditionDto {
+public class GetApplicationConditionDto {
     // TODO: 패턴 매칭 Validation 추가. Controller에도 @Valid 추가할 것
 
     @Email
+    @NotNull
     private String email;
 
     @Password
