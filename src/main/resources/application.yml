@@ -1,0 +1,9 @@
+spring:
+  profiles:
+    active: local
+
+limit:
+  life-develop: 39
+  life-design: 13
+  game-develop: 21
+  game-design: 7

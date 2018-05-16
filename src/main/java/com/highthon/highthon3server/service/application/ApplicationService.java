@@ -41,7 +41,7 @@ public class ApplicationService {
     @Value("${limit.life-design}")
     private Integer LIFE_DESIGN_LIMIT;
 
-    @Value("${limit.game-design}")
+    @Value("${limit.game-develop}")
     private Integer GAME_DEVELOP_LIMIT;
 
     @Value("${limit.game-design}")
@@ -51,7 +51,6 @@ public class ApplicationService {
 
     @Transactional
     public SaveResponse saveApplication(ApplicationSaveDto dto) {
-
         Integer waitingNumber = null;
         if (applicationRepository.existsByPhone(dto.getPhone()))
             throw new DuplicatedValueException("phone");

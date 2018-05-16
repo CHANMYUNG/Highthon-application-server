@@ -8,8 +8,12 @@ import org.springframework.context.annotation.PropertySource;
 @SpringBootApplication
 public class Highthon3ServerApplication {
 
+    private static final String APPLICATION_YML_LOCATIONS = "spring.config.location=" +
+            "classpath:application.yml," +
+            "/app/config/highthon/application.yml";
+
     public static void main(String[] args) {
         new SpringApplicationBuilder(Highthon3ServerApplication.class)
-                .properties("application.yml").run(args);
+                .properties(APPLICATION_YML_LOCATIONS).run(args);
     }
 }

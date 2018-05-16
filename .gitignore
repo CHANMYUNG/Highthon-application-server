@@ -120,8 +120,6 @@ hs_err_pid*
 /HttpRequestExamples
 # End of https://www.gitignore.io/api/java,intellij
 
-# application.yml
-/src/main/resources/application.yml
 
 # uploads
 /uploads/
