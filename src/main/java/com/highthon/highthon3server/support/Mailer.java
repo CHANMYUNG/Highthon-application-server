@@ -73,7 +73,7 @@ public class Mailer {
         message.setSubject("[제 3회 하이톤] 운영진 초대");
 
         // Text
-        message.setContent("<h1>Highthon Invitation Link</h1><br><a href=http://www.highthon.kr/invitation?invitationCode=" + invitationCode + ">여기를 누르세요</a>", "text/html;charset=utf8");
+        message.setContent("<h1>Highthon Invitation Link</h1><br><a href=\"http://highthon.kr/invitation?invitationCode=" + invitationCode + "\">여기를 누르세요</a>", "text/html;charset=utf8");
 
         // send the message
         Transport.send(message);
