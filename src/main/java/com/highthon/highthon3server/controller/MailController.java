@@ -14,6 +14,7 @@ import javax.validation.Valid;
 import java.io.FileNotFoundException;
 
 @RestController
+@RequestMapping("/api")
 public class MailController {
 
     @Autowired

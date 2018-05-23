@@ -27,6 +27,7 @@ import javax.validation.Valid;
 import java.util.Objects;
 
 @RestController
+@RequestMapping("/api")
 public class AuthController {
 
     @Autowired
