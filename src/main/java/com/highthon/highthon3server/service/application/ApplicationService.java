@@ -53,9 +53,9 @@ public class ApplicationService {
     public SaveResponse saveApplication(ApplicationSaveDto dto) {
         Integer waitingNumber = null;
         if (applicationRepository.existsByPhone(dto.getPhone()))
-            throw new DuplicatedValueException("phone");
+            throw new DuplicatedValueException("전화번호가 중복되었습니다. 다시 한 번 확인해주세요.");
         if (applicationRepository.existsByEmail(dto.getEmail()))
-            throw new DuplicatedValueException("email");
+            throw new DuplicatedValueException("이메일이 중복되었습니다. 다시 한 번 확인해주세요.");
 
         int limit = getLimit(dto.getArea(), dto.getPosition());
         int count = applicationRepository.countByAreaAndPosition(dto.getArea(), dto.getPosition());
