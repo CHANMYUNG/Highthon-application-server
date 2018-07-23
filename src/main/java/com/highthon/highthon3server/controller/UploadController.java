@@ -19,6 +19,7 @@ import java.io.*;
 import java.net.URLConnection;
 import java.util.Map;
 
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api")
 public class UploadController {

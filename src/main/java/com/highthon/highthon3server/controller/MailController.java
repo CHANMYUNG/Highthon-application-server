@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.FileNotFoundException;
 
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api")
 public class MailController {

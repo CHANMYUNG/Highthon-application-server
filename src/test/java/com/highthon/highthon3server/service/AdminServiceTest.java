@@ -12,7 +12,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Arrays;
+import java.util.stream.Stream;
 
+import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertTrue;
 
 @RunWith(SpringRunner.class)
@@ -52,6 +54,16 @@ public class AdminServiceTest {
     @Test
     public void 관리자_회원가입_테스트() {
 
+        // 1
+        String path = "storage/abcddeddec/asdsddd/asd";
+        String slicedPath = path.substring(0, path.lastIndexOf("/"));
+        String result = slicedPath.substring(slicedPath.lastIndexOf("/") + 1);
+
+        // 2
+        String[] splitedPath = path.split("/");
+        String result2 = splitedPath[splitedPath.length - 2];
+
+        assertEquals("asdsddd", result);
     }
 
     @Test

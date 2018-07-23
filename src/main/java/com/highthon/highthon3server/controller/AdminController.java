@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api")
 public class AdminController {
