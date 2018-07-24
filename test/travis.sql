@@ -71,6 +71,7 @@ CREATE TABLE `application` (
   `position` enum('DEVELOP','DESIGN') NOT NULL,
   `is_accepted` tinyint(4) NOT NULL DEFAULT '0',
   `created_date` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+  `accepted_date` DATETIME(3) DEFAULT NULL,
   `belong` varchar(100) NOT NULL,
   PRIMARY KEY (`application_id`),
   UNIQUE KEY `email_UNIQUE` (`email`),

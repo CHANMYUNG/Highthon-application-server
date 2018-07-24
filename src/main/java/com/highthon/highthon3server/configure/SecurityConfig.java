@@ -96,9 +96,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 )
                 .and()
                 .ignoring()
+                .regexMatchers(HttpMethod.GET,
+                        "^(?:[^a]+|a(?:$|[^p]|p(?:$|[^i])))*$")
                 .antMatchers(
                         HttpMethod.GET,
-                        "/",
                         "/*.html",
                         "/favicon.ico",
                         "/**/*.html",

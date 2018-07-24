@@ -52,6 +52,10 @@ public class Application {
     @Column(columnDefinition = "BOOLEAN NOT NULL DEFAULT 0")
     private Boolean isAccepted = false;
 
+    @Column
+    @JsonFormat(pattern = "yyyy-MM-dd kk:mm:ss")
+    private LocalDateTime acceptedDate;
+
     @JsonFormat(pattern = "yyyy-MM-dd kk:mm:ss")
     private LocalDateTime createdDate = LocalDateTime.now();
 

@@ -50,7 +50,7 @@ public class ApplicationService {
     final List<String> SORTABLE_APPLICATION_FIELDS = Arrays.asList("applicationId", "name", "email", "sex", "area", "position", "phone", "belong", "createdDate");
 
     @Transactional
-    public SaveResponse saveApplication(ApplicationSaveDto dto) {
+    public void saveApplication(ApplicationSaveDto dto) {
         Integer waitingNumber = null;
         if (applicationRepository.existsByPhone(dto.getPhone()))
             throw new DuplicatedValueException("전화번호가 중복되었습니다. 다시 한 번 확인해주세요.");
@@ -64,13 +64,13 @@ public class ApplicationService {
         application.setPassword(passwordEncoder.encode(application.getPassword()));
         application.setBelong(application.getBelong().replace(" ", ""));
 
-        application.setIsAccepted(count < limit);
+//        application.setIsAccepted(count < limit);
 
         applicationRepository.save(application);
 
-        if (!application.getIsAccepted()) waitingNumber = applicationRepository.getWaitingNumber(application);
-
-        return new SaveResponse(application.getIsAccepted(), waitingNumber);
+//        if (!application.getIsAccepted()) waitingNumber = applicationRepository.getWaitingNumber(application);
+//
+//        return new SaveResponse(application.getIsAccepted(), waitingNumber);
     }
 
     private int getLimit(Area area, Position position) {
@@ -83,16 +83,25 @@ public class ApplicationService {
         }
     }
 
+
     @Transactional(readOnly = true)
     public ApplicationCondition getApplicationCondition(GetApplicationConditionDto dto) {
         Application application = applicationRepository.findByEmail(dto.getEmail()).orElse(null);
         if (application == null) throw new ApplicationNotFoundException();
         if (!passwordEncoder.matches(dto.getPassword(), application.getPassword()))
-            throw new AuthenticationException("password does not match");
+            throw new AuthenticationException("비밀번호가 일치하지 않습니다.");
 
-        ApplicationCondition condition = applicationRepository.getApplicationConditionById(application.getApplicationId());
-        if (condition == null) throw new ApplicationNotFoundException();
-        else return condition;
+        if (!application.getIsAccepted()) {
+            return new ApplicationCondition(application.getName(), false, null);
+        }
+
+        Long count = applicationRepository.countEarlierAcceptedApplicationsByAreaAndPosition(application);
+
+        if (count <= getLimit(application.getArea(), application.getPosition())) {
+            return new ApplicationCondition(application.getName(), true, null);
+        }
+
+        return new ApplicationCondition(application.getName(), true, count - getLimit(application.getArea(), application.getPosition()));
     }
 
     @Transactional(readOnly = true)

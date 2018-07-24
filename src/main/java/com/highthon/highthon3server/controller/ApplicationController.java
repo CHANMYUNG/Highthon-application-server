@@ -5,10 +5,7 @@ import com.highthon.highthon3server.domain.application.ApplicationCondition;
 import com.highthon.highthon3server.domain.application.ApplicationIncludesWaitingNumber;
 import com.highthon.highthon3server.dto.application.ApplicationSaveDto;
 import com.highthon.highthon3server.dto.application.GetApplicationConditionDto;
-import com.highthon.highthon3server.dto.application.SaveResponse;
 import com.highthon.highthon3server.service.application.ApplicationService;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +13,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -41,8 +37,10 @@ public class ApplicationController {
 //            @ApiImplicitParam(name = "password", value = "비밀번호", required = true, dataType = "string", paramType = "body", example = "thisispassword")
 //    })
     @PostMapping("/apply")
-    public ResponseEntity<SaveResponse> apply(/*@ApiIgnore*/ @Valid @RequestBody ApplicationSaveDto dto) {
-        return new ResponseEntity<SaveResponse>(applicationService.saveApplication(dto), HttpStatus.CREATED);
+    @ResponseStatus(HttpStatus.CREATED)
+    public void apply(/*@ApiIgnore*/ @Valid @RequestBody ApplicationSaveDto dto) {
+//        return new ResponseEntity<SaveResponse>(applicationService.saveApplication(dto), HttpStatus.CREATED);
+        applicationService.saveApplication(dto);
     }
 
     @ApiOperation("하이톤 참가 신청 상태 조회")

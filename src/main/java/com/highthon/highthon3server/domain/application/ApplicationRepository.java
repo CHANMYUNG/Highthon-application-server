@@ -8,6 +8,8 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,6 +38,15 @@ public interface ApplicationRepository extends JpaRepository<Application, Long> 
             "FROM Application a " +
             "WHERE a.applicationId = :applicationId")
     ApplicationCondition getApplicationConditionById(@Param("applicationId") Long applicationId);
+
+
+    @Query("SELECT COUNT(a) " +
+            "FROM Application a " +
+            "WHERE a.acceptedDate <= :#{#application.acceptedDate} " +
+            "AND a.position = :#{#application.position} " +
+            "AND a.area = :#{#application.area} " +
+            "AND a.isAccepted = TRUE")
+    Long countEarlierAcceptedApplicationsByAreaAndPosition(@Param("application") Application application);
 
     @Query("SELECT a.email FROM Application  a WHERE a.isAccepted = TRUE")
     List<String> getEmailListByIsAcceptedIsTrue();
