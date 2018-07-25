@@ -59,6 +59,7 @@ public class ApplicationSaveDto {
                 .area(area)
                 .position(position)
                 .belong(belong)
+                .isAccepted(false)
                 .build();
     }
 
