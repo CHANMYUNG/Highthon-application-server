@@ -5,8 +5,8 @@ spring:
 limit:
   life-develop: 45
   life-design: 15
-  game-develop: 30
-  game-design: 10
+  game-develop: 15
+  game-design: 5
 
 # 운영환경
 ---

@@ -8,5 +8,5 @@ hooks:
   AfterInstall:
     - location: sudo chmod +x execute-deploy.sh
       timeout: 180
-    - location: execute-deploy.sh
+    - location: ./execute-deploy.sh
       timeout: 180

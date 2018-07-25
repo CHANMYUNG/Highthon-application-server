@@ -72,4 +72,22 @@ public class Application {
         this.belong = belong;
         this.isAccepted = isAccepted;
     }
+
+    @Override
+    public String toString() {
+        return "Application{" +
+                "applicationId=" + applicationId +
+                ", name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", sex=" + sex +
+                ", area=" + area +
+                ", position=" + position +
+                ", phone='" + phone + '\'' +
+                ", belong='" + belong + '\'' +
+                ", isAccepted=" + isAccepted +
+                ", acceptedDate=" + acceptedDate +
+                ", createdDate=" + createdDate +
+                '}';
+    }
 }
